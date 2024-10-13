@@ -27,7 +27,7 @@ class Combinations:
         """
         for value in self.value_count:
             if self.value_count[value] == 2:
-                self.found_combo.update(Combo="пара", Value=value)
+                self.found_combo.update(Combo="пара", Value=value * 2)
 
                 self.fullhouse_value += value * 2
                 self.two_doubles_value += value * 2
@@ -41,7 +41,7 @@ class Combinations:
         """
         for value in self.value_count:
             if self.value_count[value] == 3:
-                self.found_combo.update(Combo="сет", Value= value)
+                self.found_combo.update(Combo="сет", Value=value * 3)
 
                 self.fullhouse_value += value * 3 + "-"
                 self.value_count.pop(value)
@@ -54,7 +54,7 @@ class Combinations:
         """
         for value in self.value_count:
             if self.value_count[value] == 4:
-                self.found_combo.update(Combo="каре", Value=value)
+                self.found_combo.update(Combo="каре", Value=value * 4)
                 return True
         return False
     
