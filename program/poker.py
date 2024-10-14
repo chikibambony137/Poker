@@ -1,10 +1,12 @@
 class Poker:
     def __init__(self):
-        import deck
+        import config.deck as deck, config.count as count
+        
         self.deck = deck.Deck()
         self.hand = []
         self.table = []
-        self.max_card = 19
+        self.max_card = len(self.deck.cards) - 1
+        self.count1 = count.Count(self.deck.cards)
 
     def give_cards(self):
         """Выдает игроку две случайные карты и удаляет их из колоды
@@ -41,17 +43,14 @@ class Poker:
         """
         combo = hand + table
 
-        import count
-        count1 = count.Count()
-
         for card in combo: # list -> dict
             suit = list(card.keys())[0]
             value = card[suit]
 
-            count1.add_suit_count(suit)
-            count1.add_value_count(value)
+            self.count1.add_suit_count(suit)
+            self.count1.add_value_count(value)
 
-        import combinations
-        combination = combinations.Combinations(count1.suit_count, count1.value_count)
+        import config.combinations as combinations
+        combination = combinations.Combinations(self.count1.suit_count, self.count1.value_count)
 
         return combination.find_combo()

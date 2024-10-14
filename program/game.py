@@ -1,4 +1,4 @@
-import poker, phases
+import poker, config.phases as phases
 
 def play():
     poker1 = poker.Poker()
