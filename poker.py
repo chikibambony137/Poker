@@ -1,11 +1,7 @@
 class Poker:
     def __init__(self):
-        self.cards = [
-            {"+": "A"}, {"+": "K"}, {"+": "Q"}, {"+": "J"}, {"+": "10-"}, {"+": "9"}, {"+": "8"}, {"+": "7"}, {"+": "6"},
-            {"-": "A"}, {"-": "K"}, {"-": "Q"}, {"-": "J"}, {"-": "10-"}, {"-": "9"}, {"-": "8"}, {"-": "7"}, {"-": "6"},
-            {"*": "A"}, {"*": "K"}, {"*": "Q"}, {"*": "J"}, {"*": "10-"}, {"*": "9"}, {"*": "8"}, {"*": "7"}, {"*": "6"},
-            {"/": "A"}, {"/": "K"}, {"/": "Q"}, {"/": "J"}, {"/": "10-"}, {"/": "9"}, {"/": "8"}, {"/": "7"}, {"/": "6"},
-        ]
+        import deck
+        self.deck = deck.Deck()
         self.hand = []
         self.table = []
         self.max_card = 19
@@ -16,8 +12,8 @@ class Poker:
         import random
         for i in range(2):
             random_card = int(random.randint(0, self.max_card))
-            self.hand.append(self.cards[random_card])
-            self.cards.pop(random_card)
+            self.hand.append(self.deck.cards[random_card])
+            self.deck.cards.pop(random_card)
             self.max_card -= 1
 
     def put_cards_on_table(self, count):
@@ -26,10 +22,9 @@ class Poker:
         import random
         for i in range(count):
             random_card = int(random.randint(0, self.max_card))
-            self.table.append(self.cards[random_card])
-            self.cards.pop(random_card)
+            self.table.append(self.deck.cards[random_card])
+            self.deck.cards.pop(random_card)
             self.max_card -= 1
-        input("Нажмите Enter, чтобы продолжить...")
 
     def show_hand(self):
         """Возвращает руку (карты) игрока
