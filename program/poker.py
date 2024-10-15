@@ -41,11 +41,11 @@ class Poker:
     def find_combination(self, hand, table):
         """Находит комбинации, исходя из карт на руках и столе. Если комбинаций нет, то возвращает False
         """
-        combo = hand + table
+        table_hand = [{"+": "2"}, {"+": "3"}, {"+": "10-"}, {"+": "J"}, {"+": "Q"}, {"+": "K"}, {"+": "A"}]
 
-        suit_count, value_count = self.count1.count_cards_in_combo(combo)
+        suit_count, value_count = self.count1.count_cards_in_combo(table_hand)
 
         import config.combinations as combinations
-        combination = combinations.Combinations(suit_count, value_count)
+        combination = combinations.Combinations(suit_count, value_count, table_hand)
 
         return combination.find_combo()
