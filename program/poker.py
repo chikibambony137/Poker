@@ -43,14 +43,9 @@ class Poker:
         """
         combo = hand + table
 
-        for card in combo: # list -> dict
-            suit = list(card.keys())[0]
-            value = card[suit]
-
-            self.count1.add_suit_count(suit)
-            self.count1.add_value_count(value)
+        suit_count, value_count = self.count1.count_cards_in_combo(combo)
 
         import config.combinations as combinations
-        combination = combinations.Combinations(self.count1.suit_count, self.count1.value_count)
+        combination = combinations.Combinations(suit_count, value_count)
 
         return combination.find_combo()
