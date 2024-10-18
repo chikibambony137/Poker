@@ -8,13 +8,12 @@ class Combinations:
         self.table_hand = table_hand
         self.deck = Deck()
 
-        self.copy_value_count = self.value_count
-
         self.found_combo = {"Combo": "", "Value": None}
 
         self.fullhouse_value = ""
         self.two_doubles_value = ""
-        self.street_list = []
+        self.flash_suit = ""
+        self.street = []
 
     def find_combo(self):
         """Ищет комбинации на столе у игрока. Возвращает комбинацию или False, если их нет
@@ -31,14 +30,6 @@ class Combinations:
                         else:
                             self.find_high_card()
 
-        # if self.find_kare() == False:
-        #     if self.find_set() == False:
-        #         if self.find_double() == False:
-        #             return False
-        #         else:
-        #             self.find_two_doubles()
-        #     else:
-        #         self.find_fullhouse()
         return self.found_combo
     
     def find_high_card(self):
@@ -77,32 +68,50 @@ class Combinations:
         return False
     
     def find_street(self) -> bool:
-        count = 0
+        
+        # Преобразуем карты в список достоинств
+        values = []
         for card in self.table_hand:
-            self.street_list = []
-            if self.street_recursion(card, count, self.street_list) == True:
+            for suit in card:
+                card_suit = suit
+                card_value = card[suit]
+            if card_value == 'A':
+                values.append(1)  # Туз как единица
+                values.append(14)  # Туз как высшая карта
+            else:
+                values.append(self.deck.value_priority[card_value])
+        
+        # Удаляем дубликаты и сортируем значения в обратном порядке для поиска старшего стрита
+        values = sorted(set(values), reverse=True)
+
+        # Ищем старший стрит
+        for i in range(len(values) - 4):
+            # Проверяем последовательности из 5 карт
+            if values[i] - values[i + 4] == 4:  # Значит, есть последовательность
+                # Формируем итоговый список из оригинальных карт
+                street = []
+                for j in range(5):
+                    value = values[i] - j
+                    if value == 14 or value == 1:
+                        card_value = 'A'
+                    else:
+                        card_value = next((k for k, v in self.deck.value_priority.items() if v == value), str(value))
+
+                    street.append(card_value)
+                    
+                self.found_combo.update(Combo="стрит", Value=street)
+                self.street = street
                 return True
+
         return False
-    
-    def street_recursion(self, card: dict, count: int, street: list) -> bool:
-        next_card_index = self.deck.cards.index(card) + 1
-        count += 1
-        street.append(card)
-        if count == 5:
-            self.found_combo.update(Combo="стрит", Value= self.street_list)
-            return True
-        elif self.deck.cards[next_card_index] in self.table_hand:
-            self.street_recursion(self.deck.cards[next_card_index], count, street)
-        else: 
-            return False
 
     def find_flash(self) -> bool:
         for suit in self.suit_count:
             if self.suit_count[suit] >= 5:
                 self.found_combo.update(Combo="флеш", Value=suit * 5)
+                self.flash_suit = suit
                 return True
         return False
-
 
     def find_fullhouse(self) -> bool:
         """Если найдены сет и пара из различных карт (фуллхаус), то True, иначе False
@@ -114,11 +123,6 @@ class Combinations:
                     self.found_combo.update(Combo="фулл-хаус", Value=self.fullhouse_value)
                     return True
         return False
-
-        # if self.find_double():
-        #     self.found_combo.update(Combo="фулл-хаус", Value=self.fullhouse_value)
-        #     return True
-        # else: return False
                 
     def find_kare(self) -> bool:
         """Ищет каре (4 карты) одинакового достоинства. При наличии возвращает True, иначе False.
@@ -130,7 +134,8 @@ class Combinations:
         return False
 
     def find_street_flash(self) -> bool:
-        pass
+        if self.find_street() and self.find_flash():
+            self.found_combo.update(Combo="стрит-флеш", Value=[self.street, self.flash_suit])
 
     def find_flash_royale(self) -> bool:
         pass

@@ -28,7 +28,7 @@ def win(res: dict):
 
 def result(poker: poker.Poker):
     result = poker.find_combination(poker.hand, poker.table)
-    if not result:
+    if result == None:
         lose()
     else:
         win(result)
