@@ -1,11 +1,12 @@
 from config.deck import Deck
 
 class Combinations:
-    def __init__(self, suit_count: dict, value_count: dict, table_hand: list):
+    def __init__(self, suit_count: dict, value_count: dict, table_hand: list, hand: list):
 
         self.suit_count = suit_count
         self.value_count = value_count
         self.table_hand = table_hand
+        self.hand = hand
         self.deck = Deck()
 
         self.found_combo = {"Combo": "", "Value": None}
@@ -33,7 +34,7 @@ class Combinations:
     
     def find_high_card(self):
         i = 0
-        for card in self.table_hand:
+        for card in self.hand:
             for suit in card:
                 if self.deck.value_priority[card[suit]] > i:
                     high_card = card
@@ -60,6 +61,8 @@ class Combinations:
             if self.value_count[value] == 2 and value not in self.two_doubles_value:
                 self.two_doubles_value += value * 2
                 self.found_combo.update(Combo="две пары", Value=self.two_doubles_value)
+
+                return True
 
     def find_set(self) -> bool:
         """Ищет сет (тройку) карт одинакового достоинства. При наличии возвращает True, иначе False

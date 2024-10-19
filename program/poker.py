@@ -46,6 +46,6 @@ class Poker:
         suit_count, value_count = self.count1.count_cards_in_combo(table_hand)
 
         import config.combinations as combinations
-        combination = combinations.Combinations(suit_count, value_count, table_hand)
+        combination = combinations.Combinations(suit_count, value_count, table_hand, hand)
 
         return combination.find_combo()
