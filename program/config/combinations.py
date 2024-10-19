@@ -12,7 +12,6 @@ class Combinations:
 
         self.fullhouse_value = ""
         self.two_doubles_value = ""
-        self.flash_suit = ""
         self.street = []
 
     def find_combo(self):
@@ -23,7 +22,7 @@ class Combinations:
                 if self.find_flash():
                     if self.find_street_flash():
                         self.find_flash_royale()
-                elif self.find_street() == False:
+                elif self.find_street(self.table_hand) == False:
                     if self.find_set() == False:
                         if self.find_double():
                             self.find_two_doubles()
@@ -67,13 +66,12 @@ class Combinations:
                 return True
         return False
     
-    def find_street(self) -> bool:
+    def find_street(self, list) -> bool:
         
         # Преобразуем карты в список достоинств
         values = []
-        for card in self.table_hand:
+        for card in list:
             for suit in card:
-                card_suit = suit
                 card_value = card[suit]
             if card_value == 'A':
                 values.append(1)  # Туз как единица
@@ -108,8 +106,17 @@ class Combinations:
     def find_flash(self) -> bool:
         for suit in self.suit_count:
             if self.suit_count[suit] >= 5:
-                self.found_combo.update(Combo="флеш", Value=suit * 5)
                 self.flash_suit = suit
+                self.flash_list = []
+                for card in self.table_hand:
+                    for i in card.keys():
+                        if i == suit:
+                            self.flash_list.append(card)
+                sort_flash = sorted(self.flash_list, key=lambda x: x[suit])
+                while len(sort_flash) > 5:
+                    sort_flash.pop(0)
+
+                self.found_combo.update(Combo="флеш", Value=sort_flash)
                 return True
         return False
 
@@ -134,8 +141,11 @@ class Combinations:
         return False
 
     def find_street_flash(self) -> bool:
-        if self.find_street() and self.find_flash():
-            self.found_combo.update(Combo="стрит-флеш", Value=[self.street, self.flash_suit])
+        if self.find_street(self.flash_list) == True:
+            self.found_combo.update(Combo='стрит-флеш', Value=[self.street, self.flash_suit])
+            return True
 
     def find_flash_royale(self) -> bool:
-        pass
+        if self.street == ['A', 'K', 'Q', 'J', '10-']:
+            self.found_combo.update(Combo='ФЛЕШ-РОЯЯЯЯЯЯЛЬ!', Value=[self.street, self.flash_suit])
+            return True
