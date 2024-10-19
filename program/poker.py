@@ -41,7 +41,7 @@ class Poker:
     def find_combination(self, hand, table):
         """Находит комбинации, исходя из карт на руках и столе. Если комбинаций нет, то возвращает False
         """
-        table_hand = [{"*": "J"}, {"-": "J"}, {"+": "J"}, {"-": "10-"}, {"+": "A"}, {"-": "A"}, {"-": "K"}]
+        table_hand = table + hand
 
         suit_count, value_count = self.count1.count_cards_in_combo(table_hand)
 

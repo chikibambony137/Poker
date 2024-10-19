@@ -15,7 +15,7 @@ class Combinations:
         self.street = []
 
     def find_combo(self):
-        """Ищет комбинации на столе у игрока. Возвращает комбинацию или False, если их нет
+        """Ищет комбинации на столе у игрока. Возвращает комбинацию или None, если их нет
         """
         if self.find_kare() == False:
             if self.find_fullhouse() == False:
@@ -32,7 +32,14 @@ class Combinations:
         return self.found_combo
     
     def find_high_card(self):
-        pass
+        i = 0
+        for card in self.table_hand:
+            for suit in card:
+                if self.deck.value_priority[card[suit]] > i:
+                    high_card = card
+                    i = self.deck.value_priority[card[suit]]
+        self.found_combo.update(Combo="старшая карта", Value=high_card)
+        return True
 
     def find_double(self) -> bool:
         """Ищет одну пару карт одинакового достоинства. При наличии возвращает True
